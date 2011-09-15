@@ -1,5 +1,5 @@
-Rebar templates for generating riak_core applications
-=====================================================
+Rebar templates for generating riak\_core applications
+======================================================
 
 Usage
 -----
