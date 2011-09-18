@@ -15,6 +15,7 @@
          handle_command/3,
          is_empty/1,
          delete/1,
+         handle_coverage/4,
          handle_handoff_command/3,
          handoff_starting/2,
          handoff_cancelled/1,
@@ -75,6 +76,10 @@ is_empty(State) ->
 %% @private
 delete(State) ->
     {ok, State}.
+
+%% @private
+handle_coverage(_Req, _KeySpaces, _Sender, State) ->
+    {stop, not_implemented, State}.
 
 %% @private
 handle_exit(_Pid, _Reason, State) ->
