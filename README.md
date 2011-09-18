@@ -1,8 +1,6 @@
-Rebar templates for generating riak\_core applications
-======================================================
+# Rebar templates for generating riak\_core applications #
 
-Usage
------
+## Usage ##
 
 Install [rebar](https://github.com/basho/rebar). You can do that via homebrew:
 
