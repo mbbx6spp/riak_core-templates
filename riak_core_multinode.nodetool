@@ -1,10 +1,13 @@
-%% -*- mode: erlang;erlang-indent-level: 4;indent-tabs-mode: nil -*-
-%% ex: ft=erlang ts=4 sw=4 et
-%% -------------------------------------------------------------------
-%%
-%% nodetool: Helper Script for interacting with live nodes
-%%
-%% -------------------------------------------------------------------
+%%%'   LICENSE
+{{license}}
+%%%.
+%%%'   HEADER
+%%% @copyright {{copyright_year}} {{author_name}}
+%%% @doc nodetool is a helper script to interact with live nodes
+%%% @end
+
+%%%.
+%%%'   PUBLIC API
 
 main(Args) ->
     ok = start_epmd(),
@@ -57,6 +60,10 @@ main(Args) ->
     end,
     net_kernel:stop().
 
+%%%.
+%%%'   PRIVATE FUNCTIONS
+
+%% @private
 process_args([], Acc, TargetNode) ->
     {lists:reverse(Acc), TargetNode};
 process_args(["-setcookie", Cookie | Rest], Acc, TargetNode) ->
@@ -73,11 +80,12 @@ process_args(["-sname", TargetName | Rest], Acc, _) ->
 process_args([Arg | Rest], Acc, Opts) ->
     process_args(Rest, [Arg | Acc], Opts).
 
-
+%% @private
 start_epmd() ->
     [] = os:cmd(epmd_path() ++ " -daemon"),
     ok.
 
+%% @private
 epmd_path() ->
     ErtsBinDir = filename:dirname(escript:script_name()),
     Name = "epmd",
@@ -94,7 +102,7 @@ epmd_path() ->
             Epmd
     end.
 
-
+%% @private
 nodename(Name) ->
     case string:tokens(Name, "@") of
         [_Node, _Host] ->
@@ -104,6 +112,7 @@ nodename(Name) ->
             list_to_atom(lists:concat([Node, "@", Host]))
     end.
 
+%% @private
 append_node_suffix(Name, Suffix) ->
     case string:tokens(Name, "@") of
         [Node, Host] ->
@@ -112,15 +121,14 @@ append_node_suffix(Name, Suffix) ->
             list_to_atom(lists:concat([Node, Suffix, os:getpid()]))
     end.
 
-
-%%
-%% Given a string or binary, parse it into a list of terms, ala file:consult/0
-%%
+%% @private
+%% @doc Given a string or binary, parse it into a list of terms, ala file:consult/0
 consult(Str) when is_list(Str) ->
     consult([], Str, []);
 consult(Bin) when is_binary(Bin)->
     consult([], binary_to_list(Bin), []).
 
+%% @private
 consult(Cont, Str, Acc) ->
     case erl_scan:tokens(Cont, Str, 0) of
         {done, Result, Remaining} ->
@@ -136,3 +144,5 @@ consult(Cont, Str, Acc) ->
         {more, Cont1} ->
             consult(Cont1, eof, Acc)
     end.
+%%%.
+%%% vim: set filetype=erlang tabstop=4 foldmarker=%%%',%%%. foldmethod=marker:

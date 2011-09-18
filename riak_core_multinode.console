@@ -1,9 +1,19 @@
-%% @doc Interface for {{nodeid}}-admin commands.
+%%%'   LICENSE
+{{license}}
+%%%.
+%%%'   HEADER
+%%% @copyright {{copyright_year}} {{author_name}}
+%%% @doc Interface for {{nodeid}}-admin commands
+%%% @end
+
 -module({{appid}}_console).
 -export([join/1,
          leave/1,
          remove/1,
          ringready/1]).
+
+%%%.
+%%%'   PUBLIC API
 
 join([NodeStr]) ->
     case do_join(NodeStr) of
@@ -82,18 +92,24 @@ ringready() ->
             {error, {nodes_down, Down}}
     end.
 
-%% Retrieve the rings for all other nodes by RPC
+%%%.
+%%%'  PRIVATE FUNCTIONS
+
+%% @private
+%% @doc Retrieve the rings for all other nodes by RPC
 get_rings() ->
     {RawRings, Down} = riak_core_util:rpc_every_member(
                          riak_core_ring_manager, get_my_ring, [], 30000),
     Rings = orddict:from_list([{riak_core_ring:owner_node(R), R} || {ok, R} <- RawRings]),
     {lists:sort(Down), Rings}.
 
-%% Produce a hash of the 'chash' portion of the ring
+%% @private
+%% @doc Produce a hash of the 'chash' portion of the ring
 hash_ring(R) ->
     erlang:phash2(riak_core_ring:all_owners(R)).
 
-%% Check if all rings match given a hash and a list of [{N,P}] to check
+%% @private
+%% @doc Check if all rings match given a hash and a list of [{N,P}] to check
 rings_match(_, []) ->
     true;
 rings_match(R1hash, [{N2, R2} | Rest]) ->
@@ -103,3 +119,4 @@ rings_match(R1hash, [{N2, R2} | Rest]) ->
         _ ->
             {false, N2}
     end.
+%%% vim: set filetype=erlang tabstop=4 foldmarker=%%%',%%%. foldmethod=marker:
